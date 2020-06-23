@@ -1,0 +1,20 @@
+name: CI
+on: push
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: amondnet/vercel-action@v19
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID}}
+          vercel-project-id: ${{ secrets.PROJECT_ID}}
+        id: vercel
+
+      - name: Trigger Lighthouse Metrics
+        uses: lighthouse-metrics/github-actions@master
+        with:
+          url: ${{ steps.vercel.outputs.preview-url }}
+          token: ${{ secrets.LIGHTHOUSE_METRICS_TOKEN }}
